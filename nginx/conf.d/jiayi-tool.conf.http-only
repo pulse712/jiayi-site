@@ -1,0 +1,14 @@
+# Temporary HTTP-only config for Certbot ACME challenge
+server {
+    listen 80;
+    server_name jiayi-tools.com www.jiayi-tools.com cms.jiayi-tools.com;
+
+    location /.well-known/acme-challenge/ {
+        root /var/www/certbot;
+    }
+
+    location / {
+        return 200 'OK';
+        add_header Content-Type text/plain;
+    }
+}

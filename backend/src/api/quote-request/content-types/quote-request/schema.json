@@ -1,0 +1,66 @@
+{
+  "kind": "collectionType",
+  "collectionName": "quote_requests",
+  "info": {
+    "singularName": "quote-request",
+    "pluralName": "quote-requests",
+    "displayName": "Quote Request",
+    "description": "RFQ submissions from the website contact/quote form"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {
+    "i18n": { "localized": false }
+  },
+  "attributes": {
+    "company": {
+      "type": "string",
+      "required": true
+    },
+    "contact": {
+      "type": "string",
+      "required": true
+    },
+    "email": {
+      "type": "email",
+      "required": true
+    },
+    "phone": {
+      "type": "string"
+    },
+    "country": {
+      "type": "string",
+      "required": true
+    },
+    "standard": {
+      "type": "string"
+    },
+    "product": {
+      "type": "string"
+    },
+    "material": {
+      "type": "text"
+    },
+    "tolerance": {
+      "type": "string"
+    },
+    "quantity": {
+      "type": "string"
+    },
+    "notes": {
+      "type": "text"
+    },
+    "status": {
+      "type": "enumeration",
+      "enum": ["new", "in_review", "quoted", "won", "lost"],
+      "default": "new"
+    },
+    "drawing": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": ["files", "images"]
+    }
+  }
+}

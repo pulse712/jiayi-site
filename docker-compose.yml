@@ -1,0 +1,157 @@
+services:
+
+  # ── PostgreSQL ──────────────────────────────────────────────────────────────
+  postgres:
+    image: postgres:16-alpine
+    container_name: jiayi_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB:       ${DATABASE_NAME:-jiayi}
+      POSTGRES_USER:     ${DATABASE_USERNAME:-jiayi}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - jiayi_net
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+        reservations:
+          memory: 256M
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DATABASE_USERNAME:-jiayi}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ── Strapi CMS ──────────────────────────────────────────────────────────────
+  strapi:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: jiayi_strapi
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      NODE_ENV:              production
+      HOST:                  0.0.0.0
+      PORT:                  1337
+      APP_KEYS:              ${APP_KEYS}
+      API_TOKEN_SALT:        ${API_TOKEN_SALT}
+      ADMIN_JWT_SECRET:      ${ADMIN_JWT_SECRET}
+      TRANSFER_TOKEN_SALT:   ${TRANSFER_TOKEN_SALT}
+      JWT_SECRET:            ${JWT_SECRET}
+      DATABASE_CLIENT:       postgres
+      DATABASE_HOST:         postgres
+      DATABASE_PORT:         5432
+      DATABASE_NAME:         ${DATABASE_NAME:-jiayi}
+      DATABASE_USERNAME:     ${DATABASE_USERNAME:-jiayi}
+      DATABASE_PASSWORD:     ${DATABASE_PASSWORD}
+      DATABASE_SSL:          "false"
+      PUBLIC_URL:            ${CMS_URL:-https://cms.jiayi-tools.com}
+      ADMIN_URL:             ${CMS_URL:-https://cms.jiayi-tools.com}/admin
+      NEXT_PUBLIC_SITE_URL:  ${SITE_URL:-https://jiayi-tools.com}
+      # Cap Node.js heap to stay well within the container memory limit
+      NODE_OPTIONS:          "--max-old-space-size=768"
+    volumes:
+      - strapi_uploads:/app/public/uploads
+    networks:
+      - jiayi_net
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+        reservations:
+          memory: 512M
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:1337/_health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+  # ── Next.js Frontend ─────────────────────────────────────────────────────────
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_STRAPI_URL:  ${CMS_URL:-https://cms.jiayi-tools.com}
+        NEXT_PUBLIC_SITE_URL:    ${SITE_URL:-https://jiayi-tools.com}
+    container_name: jiayi_frontend
+    restart: unless-stopped
+    depends_on:
+      strapi:
+        condition: service_healthy
+    environment:
+      NODE_ENV:                production
+      NEXT_PUBLIC_STRAPI_URL:  ${CMS_URL:-https://cms.jiayi-tools.com}
+      NEXT_PUBLIC_SITE_URL:    ${SITE_URL:-https://jiayi-tools.com}
+      STRAPI_API_TOKEN:        ${STRAPI_API_TOKEN}
+      # Cap Node.js heap to stay well within the container memory limit
+      NODE_OPTIONS:            "--max-old-space-size=512"
+    networks:
+      - jiayi_net
+    deploy:
+      resources:
+        limits:
+          memory: 768M
+        reservations:
+          memory: 256M
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:3000/api/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # ── Nginx Reverse Proxy ──────────────────────────────────────────────────────
+  nginx:
+    image: nginx:1.27-alpine
+    container_name: jiayi_nginx
+    restart: unless-stopped
+    depends_on:
+      - frontend
+      - strapi
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/conf.d:/etc/nginx/conf.d:ro
+      - certbot_www:/var/www/certbot:ro
+      - certbot_certs:/etc/letsencrypt:ro
+    networks:
+      - jiayi_net
+    deploy:
+      resources:
+        limits:
+          memory: 128M
+        reservations:
+          memory: 32M
+
+  # ── Certbot (SSL cert renewal) ───────────────────────────────────────────────
+  certbot:
+    image: certbot/certbot:latest
+    container_name: jiayi_certbot
+    volumes:
+      - certbot_www:/var/www/certbot
+      - certbot_certs:/etc/letsencrypt
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+    deploy:
+      resources:
+        limits:
+          memory: 128M
+
+volumes:
+  postgres_data:
+  strapi_uploads:
+  certbot_www:
+  certbot_certs:
+
+networks:
+  jiayi_net:
+    driver: bridge

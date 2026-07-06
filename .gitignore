@@ -1,0 +1,29 @@
+# Environment files (never commit secrets)
+.env
+.env.local
+.env.production
+backend/.env
+backend/.env.production
+frontend/.env.local
+frontend/.env.production
+
+# Node
+node_modules/
+npm-debug.log*
+
+# Next.js
+frontend/.next/
+frontend/out/
+
+# Strapi
+backend/.tmp/
+backend/build/
+backend/dist/
+backend/.cache/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
