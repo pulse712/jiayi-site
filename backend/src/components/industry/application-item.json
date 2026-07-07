@@ -1,0 +1,14 @@
+{
+  "collectionName": "components_industry_application_items",
+  "info": {
+    "displayName": "Application Item",
+    "description": "A single typical application bullet point"
+  },
+  "options": {},
+  "attributes": {
+    "text": {
+      "type": "string",
+      "required": true
+    }
+  }
+}

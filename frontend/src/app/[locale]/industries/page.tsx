@@ -84,23 +84,25 @@ export default async function IndustriesPage() {
                         Typical Applications
                       </div>
                       <ul className="grid sm:grid-cols-2 gap-x-4 gap-y-1.5 text-sm text-muted-foreground">
-                        {ind.applications.map((a) => (
-                          <li key={a} className="flex gap-2">
-                            <span className="mt-1.5 h-1 w-1 rounded-full bg-primary shrink-0" />
-                            <span>{a}</span>
-                          </li>
-                        ))}
+                        {ind.applications.map((a, idx) => {
+                          // Handle both new component format {id, text} and old string[]
+                          const text = typeof a === "string" ? a : (a as { text: string }).text;
+                          return (
+                            <li key={idx} className="flex gap-2">
+                              <span className="mt-1.5 h-1 w-1 rounded-full bg-primary shrink-0" />
+                              <span>{text}</span>
+                            </li>
+                          );
+                        })}
                       </ul>
                     </div>
                   )}
-                  {ind.category && (
-                    <Link
-                      href={`/products/${ind.category}`}
-                      className="mt-6 inline-flex items-center gap-2 rounded-md bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground hover:bg-primary/90 transition-colors"
-                    >
-                      View Related Tools <ArrowRight className="h-4 w-4" />
-                    </Link>
-                  )}
+                  <Link
+                    href={ind.category ? `/products/${ind.category}` : "/products"}
+                    className="mt-6 inline-flex items-center gap-2 rounded-md bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground hover:bg-primary/90 transition-colors"
+                  >
+                    View Related Tools <ArrowRight className="h-4 w-4" />
+                  </Link>
                 </div>
               </div>
             );

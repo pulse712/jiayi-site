@@ -33,7 +33,9 @@
       "pluginOptions": { "i18n": { "localized": true } }
     },
     "applications": {
-      "type": "json",
+      "type": "component",
+      "repeatable": true,
+      "component": "industry.application-item",
       "pluginOptions": { "i18n": { "localized": true } }
     },
     "category": {

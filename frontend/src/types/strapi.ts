@@ -124,15 +124,20 @@ export interface ProductAttributes {
   category: CategoryAttributes | null;
 }
 
+export interface ApplicationItem {
+  id: number;
+  text: string;
+}
+
 export interface IndustryAttributes {
   id: number;
   slug: string;
   name: string;
   desc: string;
   details: string;
-  applications: string[];
+  applications: ApplicationItem[] | string[];
   image: StrapiImage | null;
-  category: string; // slug of linked product category
+  category: string;
 }
 
 export interface BlogPostAttributes {

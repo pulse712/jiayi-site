@@ -23,7 +23,7 @@ const STRAPI_TOKEN = process.env.STRAPI_API_TOKEN || "";
 async function strapiGet<T>(
   path: string,
   params: Record<string, string> = {},
-  revalidate = 60
+  revalidate = 10
 ): Promise<T | null> {
   try {
     const url = new URL(`${STRAPI_URL}/api${path}`);
@@ -114,11 +114,15 @@ export async function getProductBySlug(
 export async function getIndustries(): Promise<IndustryAttributes[]> {
   const res = await strapiGet<StrapiListResponse<IndustryAttributes>>(
     "/industries",
-    { "populate[0]": "image", "sort": "sortOrder:asc", "pagination[pageSize]": "100" }
+    {
+      "populate[0]": "image",
+      "populate[1]": "applications",
+      "sort": "sortOrder:asc",
+      "pagination[pageSize]": "100"
+    }
   );
   if (res?.data) return res.data;
-  const { industries } = await import("@/lib/static-data");
-  return industries;
+  return [];
 }
 
 export async function getIndustryBySlug(
@@ -126,11 +130,14 @@ export async function getIndustryBySlug(
 ): Promise<IndustryAttributes | null> {
   const res = await strapiGet<StrapiListResponse<IndustryAttributes>>(
     "/industries",
-    { "filters[slug][$eq]": slug, "populate[0]": "image" }
+    {
+      "filters[slug][$eq]": slug,
+      "populate[0]": "image",
+      "populate[1]": "applications"
+    }
   );
   if (res?.data?.[0]) return res.data[0];
-  const { industries } = await import("@/lib/static-data");
-  return industries.find((i) => i.slug === slug) ?? null;
+  return null;
 }
 
 // ─────────────────────────────────────────────
@@ -152,8 +159,7 @@ export async function getBlogPosts(
   if (res?.data) {
     return { data: res.data, total: res.meta.pagination.total };
   }
-  const { posts } = await import("@/lib/static-data");
-  return { data: posts, total: posts.length };
+  return { data: [], total: 0 };
 }
 
 export async function getBlogPostBySlug(
@@ -164,8 +170,7 @@ export async function getBlogPostBySlug(
     { "filters[slug][$eq]": slug, "populate": "image" }
   );
   if (res?.data?.[0]) return res.data[0];
-  const { posts } = await import("@/lib/static-data");
-  return posts.find((p) => p.slug === slug) ?? null;
+  return null;
 }
 
 // ─────────────────────────────────────────────
