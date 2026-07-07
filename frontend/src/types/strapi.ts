@@ -182,12 +182,21 @@ export interface SiteSettingAttributes {
   siteName: string;
   tagline: string;
   phone1: string;
+  showPhone1?: boolean;
   phone2?: string;
+  showPhone2?: boolean;
   email: string;
+  showEmail?: boolean;
   address: string;
+  showAddress?: boolean;
   linkedinUrl?: string;
+  showLinkedin?: boolean;
   facebookUrl?: string;
+  showFacebook?: boolean;
   youtubeUrl?: string;
+  showYoutube?: boolean;
   instagramUrl?: string;
+  showInstagram?: boolean;
   googleMapsEmbedUrl?: string;
+  footerTagline?: string;
 }

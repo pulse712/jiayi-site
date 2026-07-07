@@ -1,14 +1,15 @@
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { Linkedin, Facebook, Instagram, Phone, MapPin, Mail } from "lucide-react";
-import type { CategoryAttributes } from "@/types/strapi";
+import type { CategoryAttributes, SiteSettingAttributes } from "@/types/strapi";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 
 type Props = {
   categories: CategoryAttributes[];
+  siteSettings: SiteSettingAttributes;
 };
 
-export function Footer({ categories }: Props) {
+export function Footer({ categories, siteSettings }: Props) {
   const t = useTranslations();
 
   return (
@@ -27,35 +28,33 @@ export function Footer({ categories }: Props) {
             {t("footer.tagline")}
           </p>
           <div className="mt-5 flex gap-3">
-            {[
-              { Icon: Linkedin, label: "LinkedIn" },
-              { Icon: Facebook, label: "Facebook" },
-              { Icon: Instagram, label: "Instagram" },
-            ].map(({ Icon, label }) => (
+            {siteSettings.showLinkedin !== false && (
               <a
-                key={label}
-                href="#"
-                aria-label={label}
+                href={siteSettings.linkedinUrl || "#"}
+                aria-label="LinkedIn"
                 className="grid place-items-center h-9 w-9 rounded border border-white/15 hover:border-primary hover:text-primary transition-colors"
               >
-                <Icon className="h-4 w-4" />
+                <Linkedin className="h-4 w-4" />
               </a>
-            ))}
-            {/* X (Twitter) — official brand mark */}
-            <a
-              href="#"
-              aria-label="X (Twitter)"
-              className="grid place-items-center h-9 w-9 rounded border border-white/15 hover:border-primary hover:text-primary transition-colors"
-            >
-              <svg
-                viewBox="0 0 24 24"
-                className="h-4 w-4"
-                fill="currentColor"
-                aria-hidden="true"
+            )}
+            {siteSettings.showFacebook !== false && (
+              <a
+                href={siteSettings.facebookUrl || "#"}
+                aria-label="Facebook"
+                className="grid place-items-center h-9 w-9 rounded border border-white/15 hover:border-primary hover:text-primary transition-colors"
               >
-                <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.737-8.835L2.25 2.25h6.918l4.254 5.626L18.244 2.25Zm-1.161 17.52h1.833L7.084 4.126H5.117L17.083 19.77Z" />
-              </svg>
-            </a>
+                <Facebook className="h-4 w-4" />
+              </a>
+            )}
+            {siteSettings.showInstagram !== false && (
+              <a
+                href={siteSettings.instagramUrl || "#"}
+                aria-label="Instagram"
+                className="grid place-items-center h-9 w-9 rounded border border-white/15 hover:border-primary hover:text-primary transition-colors"
+              >
+                <Instagram className="h-4 w-4" />
+              </a>
+            )}
           </div>
         </div>
 
@@ -109,22 +108,29 @@ export function Footer({ categories }: Props) {
             {t("footer.contact")}
           </h4>
           <ul className="mt-5 space-y-3.5 text-sm text-white/70">
-            <li className="flex gap-3">
-              <Phone className="h-4 w-4 mt-0.5 text-primary shrink-0" />
-              <span>
-                +86 18688733869
-                <br />
-                +86 15602977156
-              </span>
-            </li>
-            <li className="flex gap-3">
-              <Mail className="h-4 w-4 mt-0.5 text-primary shrink-0" />
-              <span>sales@jiayitool.com</span>
-            </li>
-            <li className="flex gap-3">
-              <MapPin className="h-4 w-4 mt-0.5 text-primary shrink-0" />
-              <span>{t("footer.address")}</span>
-            </li>
+            {(siteSettings.showPhone1 !== false && siteSettings.phone1) || (siteSettings.showPhone2 !== false && siteSettings.phone2) ? (
+              <li className="flex gap-3">
+                <Phone className="h-4 w-4 mt-0.5 text-primary shrink-0" />
+                <span>
+                  {siteSettings.showPhone1 !== false && siteSettings.phone1 && (
+                    <>{siteSettings.phone1}<br /></>
+                  )}
+                  {siteSettings.showPhone2 !== false && siteSettings.phone2 && siteSettings.phone2}
+                </span>
+              </li>
+            ) : null}
+            {siteSettings.showEmail !== false && siteSettings.email && (
+              <li className="flex gap-3">
+                <Mail className="h-4 w-4 mt-0.5 text-primary shrink-0" />
+                <span>{siteSettings.email}</span>
+              </li>
+            )}
+            {siteSettings.showAddress !== false && siteSettings.address && (
+              <li className="flex gap-3">
+                <MapPin className="h-4 w-4 mt-0.5 text-primary shrink-0" />
+                <span>{siteSettings.address}</span>
+              </li>
+            )}
           </ul>
         </div>
       </div>

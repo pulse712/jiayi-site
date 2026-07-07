@@ -23,7 +23,7 @@ const STRAPI_TOKEN = process.env.STRAPI_API_TOKEN || "";
 async function strapiGet<T>(
   path: string,
   params: Record<string, string> = {},
-  revalidate = 10
+  revalidate = 1
 ): Promise<T | null> {
   try {
     const url = new URL(`${STRAPI_URL}/api${path}`);
@@ -125,6 +125,16 @@ export async function getIndustries(): Promise<IndustryAttributes[]> {
   return [];
 }
 
+export async function getFeaturedIndustries(): Promise<IndustryAttributes[]> {
+  const res = await strapiGet<StrapiSingleResponse<{ featuredIndustries: IndustryAttributes[] }>>(
+    "/homepage-setting",
+    { "populate[featuredIndustries][populate][0]": "image" },
+    1
+  );
+  if (res?.data?.featuredIndustries?.length) return res.data.featuredIndustries;
+  return [];
+}
+
 export async function getIndustryBySlug(
   slug: string
 ): Promise<IndustryAttributes | null> {
@@ -180,17 +190,24 @@ export async function getSiteSettings(): Promise<SiteSettingAttributes> {
   const res = await strapiGet<StrapiSingleResponse<SiteSettingAttributes>>(
     "/site-setting",
     {},
-    3600
+    1
   );
   if (res?.data) return res.data;
   return {
     siteName: "JIAYI TOOL",
     tagline: "Precision. Performance. Reliability.",
     phone1: "+86 18688733869",
+    showPhone1: true,
     phone2: "+86 15602977156",
+    showPhone2: true,
     email: "sales@jiayitool.com",
-    address:
-      "Floors 1–3, No. 12 Jingshan Road, Luotian Community, Songgang Town, Bao'an District, Shenzhen",
+    showEmail: true,
+    address: "Floors 1–3, No. 12 Jingshan Road, Luotian Community, Songgang Town, Bao'an District, Shenzhen",
+    showAddress: true,
+    showLinkedin: true,
+    showFacebook: true,
+    showYoutube: true,
+    showInstagram: true,
     googleMapsEmbedUrl:
       "https://www.google.com/maps?q=Jingshan+Road+Luotian+Songgang+Bao%27an+Shenzhen&output=embed",
   };

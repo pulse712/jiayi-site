@@ -5,7 +5,7 @@ import {
   ArrowRight, Target, Layers, Cpu, Sparkles,
   PenTool, ShieldCheck, FileText,
 } from "lucide-react";
-import { getIndustries } from "@/lib/strapi";
+import { getIndustries, getFeaturedIndustries, extractImageUrl } from "@/lib/strapi";
 import { SectionTitle } from "@/components/site/SectionTitle";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -40,15 +40,18 @@ const INDUSTRY_IMAGES: Record<string, string> = {
 const HEADING = "font-display uppercase";
 
 export default async function HomePage() {
-  const [t, industries] = await Promise.all([
+  const [t, industries, featuredIndustries] = await Promise.all([
     getTranslations(),
     getIndustries(),
+    getFeaturedIndustries(),
   ]);
 
   const featuredSlugs = ["aerospace", "automotive", "hydraulics", "electronics"];
-  const featuredIndustries = featuredSlugs
-    .map((s) => industries.find((i) => i.slug === s))
-    .filter(Boolean) as typeof industries;
+  const displayIndustries = featuredIndustries.length > 0
+    ? featuredIndustries.slice(0, 4)
+    : featuredSlugs
+        .map((s) => industries.find((i) => i.slug === s))
+        .filter(Boolean) as typeof industries;
 
   return (
     <>
@@ -144,16 +147,16 @@ export default async function HomePage() {
           </div>
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {featuredIndustries.map((ind) => (
+            {displayIndustries.map((ind) => (
               <Link
                 key={ind.slug}
-                href={`/products/${ind.category}`}
+                href={`/industries`}
                 className="group relative overflow-hidden bg-surface"
               >
                 <div className="aspect-[4/3] overflow-hidden bg-charcoal relative">
-                  {INDUSTRY_IMAGES[ind.slug] ? (
+                  {extractImageUrl(ind.image) || INDUSTRY_IMAGES[ind.slug] ? (
                     <img
-                      src={INDUSTRY_IMAGES[ind.slug]}
+                      src={extractImageUrl(ind.image) || INDUSTRY_IMAGES[ind.slug]}
                       alt={ind.name}
                       className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                     />

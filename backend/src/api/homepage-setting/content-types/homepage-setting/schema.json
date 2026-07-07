@@ -1,0 +1,23 @@
+{
+  "kind": "singleType",
+  "collectionName": "homepage_setting",
+  "info": {
+    "singularName": "homepage-setting",
+    "pluralName": "homepage-settings",
+    "displayName": "Homepage Settings",
+    "description": "Controls the 4 featured industries shown on the homepage"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {
+    "i18n": { "localized": false }
+  },
+  "attributes": {
+    "featuredIndustries": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::industry.industry"
+    }
+  }
+}

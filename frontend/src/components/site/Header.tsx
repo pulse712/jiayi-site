@@ -15,14 +15,15 @@ import {
   Youtube,
   Instagram,
 } from "lucide-react";
-import type { CategoryAttributes } from "@/types/strapi";
+import type { CategoryAttributes, SiteSettingAttributes } from "@/types/strapi";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 
 type Props = {
   categories: CategoryAttributes[];
+  siteSettings: SiteSettingAttributes;
 };
 
-export function Header({ categories }: Props) {
+export function Header({ categories, siteSettings }: Props) {
   const t = useTranslations();
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -54,46 +55,77 @@ export function Header({ categories }: Props) {
       <div className="hidden md:block border-b border-border/70 bg-background">
         <div className="container-page flex h-10 items-center justify-between text-xs text-muted-foreground">
           <div className="flex items-center gap-5">
-            <a
-              href="tel:+8618688733869"
-              className="inline-flex items-center gap-1.5 hover:text-primary transition-colors"
-            >
-              <Phone className="h-3.5 w-3.5" />
-              +86 18688733869
-            </a>
-            <span className="text-border">|</span>
-            <a
-              href="mailto:sales@jiayitool.com"
-              className="inline-flex items-center gap-1.5 hover:text-primary transition-colors"
-            >
-              <Mail className="h-3.5 w-3.5" />
-              sales@jiayitool.com
-            </a>
-            <span className="text-border">|</span>
-            <span className="inline-flex items-center gap-1.5">
-              <MapPin className="h-3.5 w-3.5" />
-              Songgang, Bao&apos;an District, Shenzhen, China
-            </span>
+            {siteSettings.showPhone1 !== false && siteSettings.phone1 && (
+              <a
+                href={`tel:${siteSettings.phone1.replace(/\s/g, "")}`}
+                className="inline-flex items-center gap-1.5 hover:text-primary transition-colors"
+              >
+                <Phone className="h-3.5 w-3.5" />
+                {siteSettings.phone1}
+              </a>
+            )}
+            {siteSettings.showEmail !== false && siteSettings.email && (
+              <>
+                <span className="text-border">|</span>
+                <a
+                  href={`mailto:${siteSettings.email}`}
+                  className="inline-flex items-center gap-1.5 hover:text-primary transition-colors"
+                >
+                  <Mail className="h-3.5 w-3.5" />
+                  {siteSettings.email}
+                </a>
+              </>
+            )}
+            {siteSettings.showAddress !== false && siteSettings.address && (
+              <>
+                <span className="text-border">|</span>
+                <span className="inline-flex items-center gap-1.5">
+                  <MapPin className="h-3.5 w-3.5" />
+                  {siteSettings.address}
+                </span>
+              </>
+            )}
           </div>
           <div className="flex items-center gap-3">
             <LanguageSwitcher />
             <span className="text-border">|</span>
             <span className="text-foreground/70">Follow Us:</span>
-            {[
-              { Icon: Linkedin, label: "LinkedIn" },
-              { Icon: Facebook, label: "Facebook" },
-              { Icon: Youtube, label: "YouTube" },
-              { Icon: Instagram, label: "Instagram" },
-            ].map(({ Icon, label }) => (
+            {siteSettings.showLinkedin !== false && (
               <a
-                key={label}
-                href="#"
-                aria-label={label}
+                href={siteSettings.linkedinUrl || "#"}
+                aria-label="LinkedIn"
                 className="grid place-items-center h-8 w-8 rounded border border-charcoal/15 hover:border-primary hover:text-primary transition-colors"
               >
-                <Icon className="h-3.5 w-3.5" />
+                <Linkedin className="h-3.5 w-3.5" />
               </a>
-            ))}
+            )}
+            {siteSettings.showFacebook !== false && (
+              <a
+                href={siteSettings.facebookUrl || "#"}
+                aria-label="Facebook"
+                className="grid place-items-center h-8 w-8 rounded border border-charcoal/15 hover:border-primary hover:text-primary transition-colors"
+              >
+                <Facebook className="h-3.5 w-3.5" />
+              </a>
+            )}
+            {siteSettings.showYoutube !== false && (
+              <a
+                href={siteSettings.youtubeUrl || "#"}
+                aria-label="YouTube"
+                className="grid place-items-center h-8 w-8 rounded border border-charcoal/15 hover:border-primary hover:text-primary transition-colors"
+              >
+                <Youtube className="h-3.5 w-3.5" />
+              </a>
+            )}
+            {siteSettings.showInstagram !== false && (
+              <a
+                href={siteSettings.instagramUrl || "#"}
+                aria-label="Instagram"
+                className="grid place-items-center h-8 w-8 rounded border border-charcoal/15 hover:border-primary hover:text-primary transition-colors"
+              >
+                <Instagram className="h-3.5 w-3.5" />
+              </a>
+            )}
           </div>
         </div>
       </div>

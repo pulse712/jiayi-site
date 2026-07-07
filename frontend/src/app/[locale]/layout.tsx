@@ -4,7 +4,7 @@ import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
 import { Inter, Barlow_Condensed } from "next/font/google";
 import { routing } from "@/i18n/routing";
-import { getCategories } from "@/lib/strapi";
+import { getCategories, getSiteSettings } from "@/lib/strapi";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { CookieConsent } from "@/components/site/CookieConsent";
@@ -60,9 +60,10 @@ export default async function LocaleLayout({ children, params }: Props) {
     notFound();
   }
 
-  const [messages, categories] = await Promise.all([
+  const [messages, categories, siteSettings] = await Promise.all([
     getMessages(),
     getCategories(),
+    getSiteSettings(),
   ]);
 
   return (
@@ -85,9 +86,9 @@ export default async function LocaleLayout({ children, params }: Props) {
       <body className="flex min-h-screen flex-col font-sans antialiased">
         <NextIntlClientProvider messages={messages}>
           <GoogleTranslate />
-          <Header categories={categories} />
+          <Header categories={categories} siteSettings={siteSettings} />
           <main className="flex-1">{children}</main>
-          <Footer categories={categories} />
+          <Footer categories={categories} siteSettings={siteSettings} />
           <CookieConsent />
         </NextIntlClientProvider>
       </body>

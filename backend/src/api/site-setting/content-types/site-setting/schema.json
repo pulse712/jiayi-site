@@ -25,27 +25,59 @@
     "phone1": {
       "type": "string"
     },
+    "showPhone1": {
+      "type": "boolean",
+      "default": true
+    },
     "phone2": {
       "type": "string"
     },
+    "showPhone2": {
+      "type": "boolean",
+      "default": true
+    },
     "email": {
       "type": "email"
+    },
+    "showEmail": {
+      "type": "boolean",
+      "default": true
     },
     "address": {
       "type": "text",
       "pluginOptions": { "i18n": { "localized": true } }
     },
+    "showAddress": {
+      "type": "boolean",
+      "default": true
+    },
     "linkedinUrl": {
       "type": "string"
+    },
+    "showLinkedin": {
+      "type": "boolean",
+      "default": true
     },
     "facebookUrl": {
       "type": "string"
     },
+    "showFacebook": {
+      "type": "boolean",
+      "default": true
+    },
     "youtubeUrl": {
       "type": "string"
     },
+    "showYoutube": {
+      "type": "boolean",
+      "default": true
+    },
     "instagramUrl": {
       "type": "string"
+    },
+    "showInstagram": {
+      "type": "boolean",
+      "default": true
     },
     "footerTagline": {
       "type": "text",
