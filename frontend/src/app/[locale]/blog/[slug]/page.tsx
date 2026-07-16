@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { notFound } from "next/navigation";
 import { Link } from "@/i18n/navigation";
 import { ArrowLeft, Calendar, User, Clock, Tag } from "lucide-react";
@@ -111,10 +112,13 @@ export default async function BlogPostPage({ params }: Props) {
         {/* Article image as hero background */}
         {(imgUrl || post.category) && (
           <div className="absolute inset-0">
-            <img
+            <Image
               src={imgUrl ?? `/images/blog-${post.category.toLowerCase().replace(/\s+/g, "-")}.jpg`}
               alt={post.title}
-              className="h-full w-full object-cover opacity-30"
+              fill
+              sizes="100vw"
+              className="object-cover opacity-30"
+              priority
             />
           </div>
         )}
@@ -205,7 +209,7 @@ export default async function BlogPostPage({ params }: Props) {
                   >
                     <div className="aspect-[5/3] relative overflow-hidden">
                       {rImgUrl ? (
-                        <img src={rImgUrl} alt={p.title} loading="lazy" className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                        <Image src={rImgUrl} alt={p.title} fill sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw" className="object-cover transition-transform duration-500 group-hover:scale-105" />
                       ) : (
                         <div className="absolute inset-0 bg-charcoal" />
                       )}

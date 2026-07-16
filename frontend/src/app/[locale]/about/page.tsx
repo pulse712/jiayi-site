@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { Link } from "@/i18n/navigation";
-import { ShieldCheck, Award, Heart, Users } from "lucide-react";
+import { ArrowRight, ShieldCheck, Award, Heart, Users } from "lucide-react";
 import { SectionTitle } from "@/components/site/SectionTitle";
 
 export const metadata: Metadata = {
@@ -16,7 +17,7 @@ export default function AboutPage() {
       {/* Hero */}
       <section className="relative border-b border-border overflow-hidden bg-charcoal">
         <div className="absolute inset-0">
-          <img src="/images/hero-about.jpg" alt="JIAYI facility" className="h-full w-full object-cover opacity-40" />
+          <Image src="/images/hero-about.jpg" alt="JIAYI facility" fill sizes="100vw" className="object-cover opacity-40" />
         </div>
         <div className="container-page py-24 relative">
           <div className="text-xs font-semibold uppercase tracking-[0.18em] text-primary">
@@ -47,10 +48,12 @@ export default function AboutPage() {
                 Engineered for OEMs.
               </h2>
               <div className="mt-6 overflow-hidden rounded-md border border-border aspect-square relative">
-                <img
+                <Image
                   src="/images/about-building.jpg"
                   alt="JIAYI headquarters building"
-                  className="absolute inset-0 h-full w-full object-cover"
+                  fill
+                  sizes="(max-width: 1024px) 100vw, 33vw"
+                  className="object-cover"
                 />
               </div>
               <p className="mt-2 bg-charcoal text-white/80 px-4 py-2 text-xs font-mono rounded-b-md">
@@ -125,10 +128,12 @@ export default function AboutPage() {
           <div className="mt-10 grid grid-cols-1 md:grid-cols-3 gap-4">
             {/* Large featured image */}
             <div className="md:col-span-2 overflow-hidden rounded-md border border-border aspect-[16/9] relative group">
-              <img
+              <Image
                 src="/images/factory.jpg"
                 alt="JIAYI production floor"
-                className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                fill
+                sizes="(max-width: 768px) 100vw, 66vw"
+                className="object-cover transition-transform duration-500 group-hover:scale-105"
               />
               <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-charcoal/80 to-transparent p-5">
                 <p className="text-white text-sm font-semibold">Production Floor — 1,800 m²</p>
@@ -138,10 +143,12 @@ export default function AboutPage() {
             {/* Side images */}
             <div className="flex flex-col gap-4">
               <div className="overflow-hidden rounded-md border border-border aspect-[4/3] relative group flex-1">
-                <img
+                <Image
                   src="/images/about-building.jpg"
                   alt="JIAYI headquarters"
-                  className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  fill
+                  sizes="(max-width: 768px) 100vw, 33vw"
+                  className="object-cover transition-transform duration-500 group-hover:scale-105"
                 />
                 <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-charcoal/80 to-transparent p-4">
                   <p className="text-white text-xs font-semibold">JIAYI Headquarters</p>
@@ -149,10 +156,12 @@ export default function AboutPage() {
                 </div>
               </div>
               <div className="overflow-hidden rounded-md border border-border aspect-[4/3] relative group flex-1">
-                <img
+                <Image
                   src="/images/hero-about.jpg"
                   alt="JIAYI facility exterior"
-                  className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  fill
+                  sizes="(max-width: 768px) 100vw, 33vw"
+                  className="object-cover transition-transform duration-500 group-hover:scale-105"
                 />
                 <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-charcoal/80 to-transparent p-4">
                   <p className="text-white text-xs font-semibold">Facility Exterior</p>
@@ -237,6 +246,40 @@ export default function AboutPage() {
         </div>
       </section>
 
+      {/* Factory Tour teaser */}
+      <section className="py-16 bg-charcoal">
+        <div className="container-page grid lg:grid-cols-2 gap-10 items-center">
+          <div className="relative aspect-[16/9] rounded-md overflow-hidden border border-white/10">
+            <Image
+              src="/images/factory.jpg"
+              alt="JIAYI production floor"
+              fill
+              sizes="(max-width: 1024px) 100vw, 50vw"
+              className="object-cover opacity-80"
+            />
+          </div>
+          <div>
+            <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-primary mb-3">
+              Factory Tour
+            </p>
+            <h2 className="text-3xl font-bold text-white leading-tight">
+              See Exactly How Your Tools Are Made
+            </h2>
+            <p className="mt-4 text-white/70 leading-relaxed">
+              42 five-axis grinding centres, in-house PVD coating, Zoller 100% optical
+              inspection, and Mitutoyo CMM verification — all under one roof in Shenzhen.
+              Explore our full equipment list and testing capabilities.
+            </p>
+            <Link
+              href="/factory"
+              className="mt-6 inline-flex items-center gap-2 rounded-md bg-primary px-6 py-3 text-sm font-bold text-primary-foreground hover:bg-primary/90 transition-colors"
+            >
+              Full Factory Tour <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
+        </div>
+      </section>
+
       {/* CTA */}
       <section className="py-16 text-center">
         <div className="container-page">
@@ -245,12 +288,20 @@ export default function AboutPage() {
             Send us your drawings or requirements — our engineering team will respond within 24
             hours.
           </p>
-          <Link
-            href="/quote"
-            className="mt-8 inline-flex items-center gap-2 rounded-md bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground hover:bg-primary/90 transition-colors"
-          >
-            Request a Factory Tour
-          </Link>
+          <div className="mt-8 flex flex-wrap justify-center gap-4">
+            <Link
+              href="/factory"
+              className="inline-flex items-center gap-2 rounded-md bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground hover:bg-primary/90 transition-colors"
+            >
+              Tour the Factory
+            </Link>
+            <Link
+              href="/quote"
+              className="inline-flex items-center gap-2 rounded-md border-2 border-charcoal px-6 py-3 text-sm font-semibold text-charcoal hover:bg-charcoal hover:text-white transition-colors"
+            >
+              Request a Quote
+            </Link>
+          </div>
         </div>
       </section>
     </>

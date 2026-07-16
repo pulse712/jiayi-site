@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import {
@@ -102,10 +103,13 @@ export default async function HomePage() {
           {/* Hero visual */}
           <div className="relative">
             <div className="relative aspect-[4/3] overflow-hidden shadow-2xl">
-              <img
+              <Image
                 src="/images/hero-tools.jpg"
                 alt="JIAYI precision carbide cutting tools"
-                className="absolute inset-0 h-full w-full object-cover"
+                fill
+                sizes="(max-width: 1024px) 100vw, 50vw"
+                className="object-cover"
+                priority
               />
               <div className="absolute inset-0 bg-charcoal/30" />
             </div>
@@ -155,10 +159,12 @@ export default async function HomePage() {
               >
                 <div className="aspect-[4/3] overflow-hidden bg-charcoal relative">
                   {extractImageUrl(ind.image) || INDUSTRY_IMAGES[ind.slug] ? (
-                    <img
+                    <Image
                       src={extractImageUrl(ind.image) || INDUSTRY_IMAGES[ind.slug]}
                       alt={ind.name}
-                      className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      fill
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                      className="object-cover transition-transform duration-500 group-hover:scale-105"
                     />
                   ) : (
                     <div className="h-full w-full grid-pattern flex items-center justify-center">
@@ -214,10 +220,12 @@ export default async function HomePage() {
         <div className="grid lg:grid-cols-2">
           {/* Factory image */}
           <div className="relative min-h-[260px] lg:min-h-[340px] overflow-hidden">
-            <img
+            <Image
               src="/images/factory.jpg"
               alt="JIAYI factory"
-              className="absolute inset-0 h-full w-full object-cover"
+              fill
+              sizes="(max-width: 1024px) 100vw, 50vw"
+              className="object-cover"
             />
             <div className="absolute inset-0 bg-charcoal/50" />
           </div>

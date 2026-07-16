@@ -1,4 +1,5 @@
 import { useTranslations } from "next-intl";
+import Image from "next/image";
 import { Link } from "@/i18n/navigation";
 import { Linkedin, Facebook, Instagram, Phone, MapPin, Mail } from "lucide-react";
 import type { CategoryAttributes, SiteSettingAttributes } from "@/types/strapi";
@@ -18,9 +19,11 @@ export function Footer({ categories, siteSettings }: Props) {
         {/* Brand */}
         <div>
           <Link href="/">
-            <img
+            <Image
               src="/images/logo.png"
               alt="JIAYI TOOL"
+              width={120}
+              height={40}
               className="h-10 w-auto"
             />
           </Link>
@@ -88,8 +91,13 @@ export function Footer({ categories, siteSettings }: Props) {
                 ["/about", "footer.aboutJiayi"],
                 ["/industries", "footer.industriesServed"],
                 ["/services", "footer.services"],
+                ["/factory", "footer.factoryTour"],
                 ["/quote", "footer.requestQuote"],
                 ["/blog", "footer.blogNews"],
+                ["/case-studies", "footer.caseStudies"],
+                ["/downloads", "footer.downloads"],
+                ["/videos", "footer.videos"],
+                ["/faq", "footer.faq"],
                 ["/contact", "footer.contactLink"],
               ] as const
             ).map(([href, key]) => (

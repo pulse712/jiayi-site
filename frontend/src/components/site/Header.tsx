@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { Link, usePathname } from "@/i18n/navigation";
 import {
@@ -134,10 +135,13 @@ export function Header({ categories, siteSettings }: Props) {
       <div className="container-page flex h-20 items-center justify-between gap-6">
         {/* Logo */}
         <Link href="/" className="flex items-center shrink-0" aria-label="JIAYI home">
-          <img
+          <Image
             src="/images/logo.png"
             alt="JIAYI TOOL"
+            width={120}
+            height={40}
             className="h-10 w-auto"
+            priority
           />
         </Link>
 

@@ -9,6 +9,7 @@ import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { CookieConsent } from "@/components/site/CookieConsent";
 import { GoogleTranslate } from "@/components/site/GoogleTranslate";
+import { WhatsAppButton } from "@/components/site/WhatsAppButton";
 import { organizationSchema, localBusinessSchema } from "@/lib/schema";
 import "@/app/globals.css";
 
@@ -56,7 +57,7 @@ export default async function LocaleLayout({ children, params }: Props) {
   const { locale } = await params;
 
   // Validate locale
-  if (!routing.locales.includes(locale as "en" | "es")) {
+  if (!routing.locales.includes(locale as "en" | "es" | "de" | "ru" | "ja")) {
     notFound();
   }
 
@@ -90,6 +91,7 @@ export default async function LocaleLayout({ children, params }: Props) {
           <main className="flex-1">{children}</main>
           <Footer categories={categories} siteSettings={siteSettings} />
           <CookieConsent />
+          <WhatsAppButton phone={siteSettings.phone1} />
         </NextIntlClientProvider>
       </body>
     </html>

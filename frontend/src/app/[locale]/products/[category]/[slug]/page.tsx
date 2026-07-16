@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { notFound } from "next/navigation";
 import { Link } from "@/i18n/navigation";
 import { ArrowLeft, ArrowRight, Tag, Layers, Wrench, Shield } from "lucide-react";
@@ -9,6 +10,7 @@ import {
   getStrapiImageUrl,
 } from "@/lib/strapi";
 import { BlocksRenderer } from "@/components/site/BlocksRenderer";
+import { productSchema, breadcrumbSchema } from "@/lib/schema";
 
 type Props = {
   params: Promise<{ locale: string; category: string; slug: string }>;
@@ -45,13 +47,44 @@ export default async function ProductDetailPage({ params }: Props) {
   const imgUrl = product.image ? getStrapiImageUrl(product.image.url) : null;
   const relatedProducts = related.filter((p) => p.slug !== slug).slice(0, 4);
 
+  const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://jiayi-tools.com";
+  const productUrl = `${SITE_URL}/products/${cat.slug}/${product.slug}`;
+
+  const descriptionText =
+    typeof product.description === "string"
+      ? product.description
+      : `${product.name} — ${product.spec ?? ""} | Material: ${product.material} | Coating: ${product.coating}`.trim();
+
+  const jsonLdProduct = productSchema({
+    name: product.name,
+    description: descriptionText,
+    image: imgUrl ?? undefined,
+    sku: product.code,
+    url: productUrl,
+  });
+
+  const jsonLdBreadcrumb = breadcrumbSchema([
+    { name: "Home", url: SITE_URL },
+    { name: "Products", url: `${SITE_URL}/products` },
+    { name: cat.name, url: `${SITE_URL}/products/${cat.slug}` },
+    { name: product.name, url: productUrl },
+  ]);
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdProduct) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdBreadcrumb) }}
+      />
       {/* Breadcrumb hero */}
       <section className="relative border-b border-border overflow-hidden bg-charcoal">
         {imgUrl && (
           <div className="absolute inset-0">
-            <img src={imgUrl} alt={product.name} className="h-full w-full object-cover opacity-20" />
+            <Image src={imgUrl} alt={product.name} fill sizes="100vw" className="object-cover opacity-20" />
           </div>
         )}
         <div className="container-page py-14 relative">
@@ -85,7 +118,7 @@ export default async function ProductDetailPage({ params }: Props) {
             <div>
               <div className="aspect-square overflow-hidden rounded-md border border-border bg-surface relative">
                 {imgUrl ? (
-                  <img src={imgUrl} alt={product.name} className="h-full w-full object-cover" />
+                  <Image src={imgUrl} alt={product.name} fill sizes="(max-width: 1024px) 100vw, 45vw" className="object-cover" priority />
                 ) : (
                   <div className="h-full w-full flex items-center justify-center">
                     <span className="font-display text-5xl font-black text-charcoal/10 uppercase">
@@ -99,8 +132,8 @@ export default async function ProductDetailPage({ params }: Props) {
               {product.gallery && product.gallery.length > 0 && (
                 <div className="mt-3 grid grid-cols-4 gap-2">
                   {product.gallery.map((img, i) => (
-                    <div key={i} className="aspect-square overflow-hidden rounded border border-border bg-surface">
-                      <img src={getStrapiImageUrl(img.url)} alt={`${product.name} ${i + 1}`} className="h-full w-full object-cover hover:scale-105 transition-transform duration-300" />
+                    <div key={i} className="aspect-square overflow-hidden rounded border border-border bg-surface relative">
+                      <Image src={getStrapiImageUrl(img.url)} alt={`${product.name} ${i + 1}`} fill sizes="25vw" className="object-cover hover:scale-105 transition-transform duration-300" />
                     </div>
                   ))}
                 </div>
@@ -192,7 +225,7 @@ export default async function ProductDetailPage({ params }: Props) {
                   >
                     <div className="aspect-square bg-surface relative overflow-hidden">
                       {rImg ? (
-                        <img src={rImg} alt={p.name} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                        <Image src={rImg} alt={p.name} fill sizes="(max-width: 640px) 50vw, 25vw" className="object-cover transition-transform duration-500 group-hover:scale-105" />
                       ) : (
                         <div className="h-full w-full flex items-center justify-center">
                           <span className="font-mono text-xs text-charcoal/20">{p.code}</span>

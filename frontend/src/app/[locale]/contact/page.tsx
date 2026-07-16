@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { MapPin, Phone, Mail, Clock } from "lucide-react";
@@ -29,7 +30,7 @@ export default async function ContactPage() {
     <>
       <section className="relative border-b border-border overflow-hidden bg-charcoal">
         <div className="absolute inset-0">
-          <img src="/images/hero-contact.jpg" alt="Contact" className="h-full w-full object-cover opacity-30" />
+          <Image src="/images/hero-contact.jpg" alt="Contact" fill sizes="100vw" className="object-cover opacity-30" />
         </div>
         <div className="container-page py-20 relative">
           <div className="text-xs text-white/70">

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { Link } from "@/i18n/navigation";
 import { ArrowRight } from "lucide-react";
 import { getIndustries, extractImageUrl } from "@/lib/strapi";
@@ -17,7 +18,7 @@ export default async function IndustriesPage() {
     <>
       <section className="relative border-b border-border overflow-hidden bg-charcoal">
         <div className="absolute inset-0">
-          <img src="/images/hero-industries.jpg" alt="Industries" className="h-full w-full object-cover opacity-30" />
+          <Image src="/images/hero-industries.jpg" alt="Industries" fill sizes="100vw" className="object-cover opacity-30" />
         </div>
         <div className="container-page py-20 relative">
           <div className="text-xs text-white/70">
@@ -49,10 +50,12 @@ export default async function IndustriesPage() {
                 {/* Image */}
                 <div className="lg:col-span-2 aspect-[4/3] max-w-sm w-full bg-charcoal border border-border rounded-md relative overflow-hidden">
                   {imgUrl ? (
-                    <img
+                    <Image
                       src={imgUrl}
                       alt={ind.name}
-                      className="absolute inset-0 h-full w-full object-cover"
+                      fill
+                      sizes="(max-width: 1024px) 100vw, 40vw"
+                      className="object-cover"
                     />
                   ) : (
                     <div className="absolute inset-0 grid-pattern flex items-center justify-center">

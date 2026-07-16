@@ -214,8 +214,31 @@ export async function getSiteSettings(): Promise<SiteSettingAttributes> {
 }
 
 // ─────────────────────────────────────────────
-// Quote Request (POST)
+// File Upload (for quote request drawings)
 // ─────────────────────────────────────────────
+export async function uploadFileToStrapi(
+  file: Blob,
+  filename: string
+): Promise<number | null> {
+  try {
+    const form = new FormData();
+    form.append("files", file, filename);
+
+    const res = await fetch(`${STRAPI_URL}/api/upload`, {
+      method: "POST",
+      headers: STRAPI_TOKEN
+        ? { Authorization: `Bearer ${STRAPI_TOKEN}` }
+        : {},
+      body: form,
+    });
+
+    if (!res.ok) return null;
+    const data = (await res.json()) as Array<{ id: number }>;
+    return data?.[0]?.id ?? null;
+  } catch {
+    return null;
+  }
+}
 export async function submitQuoteRequest(
   data: Record<string, string>
 ): Promise<boolean> {

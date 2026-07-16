@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { Link } from "@/i18n/navigation";
 import {
   ShieldCheck, Ruler, Microscope, ClipboardCheck,
@@ -60,7 +61,7 @@ export default function QualityPage() {
     <>
       <section className="relative border-b border-border overflow-hidden bg-charcoal">
         <div className="absolute inset-0">
-          <img src="/images/hero-quality.jpg" alt="Quality" className="h-full w-full object-cover opacity-30" />
+          <Image src="/images/hero-quality.jpg" alt="Quality" fill sizes="100vw" className="object-cover opacity-30" />
         </div>
         <div className="container-page py-20 relative">
           <div className="text-xs text-white/70">
@@ -149,8 +150,8 @@ export default function QualityPage() {
           </div>
 
           <div className="rounded-md border border-border bg-surface overflow-hidden">
-            <div className="aspect-video overflow-hidden">
-              <img src="/images/quality-inspection.jpg" alt="Quality inspection at JIAYI" className="h-full w-full object-cover" />
+            <div className="aspect-video overflow-hidden relative">
+              <Image src="/images/quality-inspection.jpg" alt="Quality inspection at JIAYI" fill sizes="(max-width: 1024px) 100vw, 50vw" className="object-cover" />
             </div>
             <div className="p-8">
               <Boxes className="h-8 w-8 text-primary" />

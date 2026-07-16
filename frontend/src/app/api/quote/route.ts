@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
-import { submitQuoteRequest } from "@/lib/strapi";
+import { uploadFileToStrapi } from "@/lib/strapi";
 
 // ── Rate limiting (in-memory, resets on server restart) ──────────────────────
 const rateLimit = new Map<string, { count: number; reset: number }>();
-const RATE_LIMIT = 5;       // max submissions
-const RATE_WINDOW = 60_000; // per 60 seconds
+const RATE_LIMIT = 5;
+const RATE_WINDOW = 60_000;
 
 function isRateLimited(ip: string): boolean {
   const now = Date.now();
@@ -34,12 +34,27 @@ const quoteSchema = z.object({
   notes:     z.string().max(2000).optional(),
 });
 
+const STRAPI_URL =
+  process.env.STRAPI_INTERNAL_URL || "http://localhost:1337";
+const STRAPI_TOKEN = process.env.STRAPI_API_TOKEN || "";
+
+const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10 MB
+const ALLOWED_TYPES = [
+  "application/pdf",
+  "application/acad",
+  "application/dxf",
+  "application/octet-stream", // .dwg files often come through as octet-stream
+  "image/vnd.dxf",
+];
+const ALLOWED_EXTENSIONS = [".pdf", ".dwg", ".dxf"];
+
 export async function POST(req: NextRequest) {
   try {
-    // Rate limiting
-    const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim()
-      ?? req.headers.get("x-real-ip")
-      ?? "unknown";
+    // ── Rate limiting ──────────────────────────────────────────────────────
+    const ip =
+      req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ??
+      req.headers.get("x-real-ip") ??
+      "unknown";
 
     if (isRateLimited(ip)) {
       return NextResponse.json(
@@ -48,10 +63,26 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Parse + validate
-    const body = await req.json();
-    const parsed = quoteSchema.safeParse(body);
+    // ── Parse multipart form data ──────────────────────────────────────────
+    let formData: FormData;
+    try {
+      formData = await req.formData();
+    } catch {
+      return NextResponse.json(
+        { error: "Invalid form data." },
+        { status: 400 }
+      );
+    }
 
+    // ── Extract and validate text fields ──────────────────────────────────
+    const fields: Record<string, string> = {};
+    for (const [key, value] of formData.entries()) {
+      if (typeof value === "string") {
+        fields[key] = value;
+      }
+    }
+
+    const parsed = quoteSchema.safeParse(fields);
     if (!parsed.success) {
       return NextResponse.json(
         { error: "Invalid form data.", details: parsed.error.flatten().fieldErrors },
@@ -59,16 +90,58 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const ok = await submitQuoteRequest(parsed.data as Record<string, string>);
+    // ── Handle file upload (optional) ─────────────────────────────────────
+    let drawingId: number | null = null;
+    const file = formData.get("drawing");
 
-    if (ok) {
+    if (file instanceof File && file.size > 0) {
+      // Validate size
+      if (file.size > MAX_FILE_SIZE) {
+        return NextResponse.json(
+          { error: "File too large. Maximum size is 10 MB." },
+          { status: 400 }
+        );
+      }
+
+      // Validate extension
+      const ext = "." + file.name.split(".").pop()?.toLowerCase();
+      if (!ALLOWED_EXTENSIONS.includes(ext)) {
+        return NextResponse.json(
+          { error: "Invalid file type. Only PDF, DWG, and DXF files are accepted." },
+          { status: 400 }
+        );
+      }
+
+      // Upload to Strapi
+      drawingId = await uploadFileToStrapi(file, file.name);
+      // Non-fatal — if upload fails we still save the quote without the file
+      if (!drawingId) {
+        console.warn("[Quote] File upload to Strapi failed — saving quote without drawing.");
+      }
+    }
+
+    // ── Create quote-request record in Strapi ─────────────────────────────
+    const payload: Record<string, unknown> = { ...parsed.data };
+    if (drawingId) {
+      payload.drawing = drawingId;
+    }
+
+    const res = await fetch(`${STRAPI_URL}/api/quote-requests`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        ...(STRAPI_TOKEN ? { Authorization: `Bearer ${STRAPI_TOKEN}` } : {}),
+      },
+      body: JSON.stringify({ data: payload }),
+    });
+
+    if (res.ok) {
       return NextResponse.json({ success: true }, { status: 201 });
     }
 
-    // Strapi unavailable — log and return error so user knows
-    console.error("[Quote Request - Strapi unavailable]", JSON.stringify(parsed.data));
+    console.error("[Quote Request] Strapi error:", res.status, await res.text());
     return NextResponse.json(
-      { error: "Service temporarily unavailable. Please email us directly." },
+      { error: "Service temporarily unavailable. Please email us directly at sales@jiayitool.com" },
       { status: 503 }
     );
   } catch (err) {

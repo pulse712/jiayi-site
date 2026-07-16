@@ -9,6 +9,7 @@ import {
 } from "@/lib/strapi";
 import { compatStandards } from "@/lib/static-data";
 import { ProductGrid } from "./ProductGrid";
+import { breadcrumbSchema } from "@/lib/schema";
 
 type Props = {
   params: Promise<{ locale: string; category: string }>;
@@ -44,8 +45,19 @@ export default async function CategoryPage({ params }: Props) {
   const materials = ["Carbide", "HSS-Co", "PCD", "CBN"];
   const coatings = ["TiAlN", "AlTiN", "TiCN", "Diamond CVD", "Uncoated"];
 
+  const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://jiayi-tools.com";
+  const jsonLdBreadcrumb = breadcrumbSchema([
+    { name: "Home", url: SITE_URL },
+    { name: "Products", url: `${SITE_URL}/products` },
+    { name: cat.name, url: `${SITE_URL}/products/${cat.slug}` },
+  ]);
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdBreadcrumb) }}
+      />
       <section className="bg-surface border-b border-border">
         <div className="container-page py-12">
           <div className="text-xs text-muted-foreground">
