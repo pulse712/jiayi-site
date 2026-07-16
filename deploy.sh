@@ -69,7 +69,7 @@ echo ""
 echo "→ Building Next.js..."
 cd "$PROJECT_DIR/frontend"
 npm install --legacy-peer-deps
-NODE_ENV=production npm run build
+NODE_ENV=production NODE_OPTIONS="--max-old-space-size=3072" npm run build
 echo "✓ Next.js built"
 
 # ── 7. Configure Nginx ───────────────────────────────────────────────────────
