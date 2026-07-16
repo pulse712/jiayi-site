@@ -3,7 +3,6 @@ import Image from "next/image";
 import { Link } from "@/i18n/navigation";
 import { Linkedin, Facebook, Instagram, Phone, MapPin, Mail } from "lucide-react";
 import type { CategoryAttributes, SiteSettingAttributes } from "@/types/strapi";
-import { LanguageSwitcher } from "./LanguageSwitcher";
 
 type Props = {
   categories: CategoryAttributes[];
@@ -148,7 +147,6 @@ export function Footer({ categories, siteSettings }: Props) {
         <div className="container-page py-5 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-white/50">
           <div>{t("footer.copyright")}</div>
           <div className="flex items-center gap-5">
-            <LanguageSwitcher variant="dark" />
             <Link href="/privacy" className="hover:text-white">
               {t("footer.privacy")}
             </Link>
