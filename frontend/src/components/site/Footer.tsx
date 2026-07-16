@@ -145,7 +145,6 @@ export function Footer({ categories, siteSettings }: Props) {
       {/* Bottom bar */}
       <div className="border-t border-white/10">
         <div className="container-page py-5 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-white/50">
-          <div>{t("footer.copyright")}</div>
           <div className="flex items-center gap-5">
             <Link href="/privacy" className="hover:text-white">
               {t("footer.privacy")}
@@ -154,6 +153,8 @@ export function Footer({ categories, siteSettings }: Props) {
               {t("footer.terms")}
             </Link>
           </div>
+          <div>{t("footer.copyright")}</div>
+          <div className="hidden sm:block sm:w-24" />
         </div>
       </div>
     </footer>
