@@ -4,6 +4,11 @@ import createNextIntlPlugin from "next-intl/plugin";
 const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
 
 const nextConfig: NextConfig = {
+  // Skip node_modules from output file tracing — not needed for npm start deploys
+  // This prevents the slow post-build scan of 750MB+ node_modules on each build
+  outputFileTracingExcludes: {
+    "*": ["./node_modules/**/*"],
+  },
   images: {
     remotePatterns: [
       {
