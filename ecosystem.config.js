@@ -24,8 +24,9 @@ module.exports = {
     {
       name: "frontend",
       cwd: "/home/vpsuser/Downloads/Jiayi-Website-Next/frontend",
-      script: "node",
-      args: ".next/standalone/server.js",
+      script: "npm",
+      args: "run start",
+      interpreter: "none",
       instances: 1,
       autorestart: true,
       watch: false,

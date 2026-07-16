@@ -4,7 +4,7 @@ import { getCategories, getBlogPosts } from "@/lib/strapi";
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://jiayi-tools.com";
 
 // All supported locales — "en" is the default (no prefix in URL)
-const LOCALES = ["en", "es", "de", "ru", "ja"] as const;
+const LOCALES = ["en", "es", "de", "ru", "ja", "zh"] as const;
 
 /** Prefix a path for a given locale. EN has no prefix (default). */
 function localePath(locale: string, path: string): string {

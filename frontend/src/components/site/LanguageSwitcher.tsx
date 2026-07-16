@@ -10,6 +10,7 @@ const LANGUAGES = [
   { code: "de", label: "Deutsch",    short: "DE", googleCode: "de" },
   { code: "ru", label: "Русский",    short: "RU", googleCode: "ru" },
   { code: "ja", label: "日本語",      short: "JA", googleCode: "ja" },
+  { code: "zh", label: "中文",        short: "ZH", googleCode: "zh-CN" },
 ] as const;
 
 type LangCode = (typeof LANGUAGES)[number]["code"];
