@@ -198,6 +198,76 @@ export default async function HomePage() {
         </div>
       </section>
 
+      {/* ── BUSINESS PROCESS ────────────────────────────────────────────── */}
+      <section className="py-20 bg-background border-b border-border">
+        <div className="container-page">
+          <div className="text-center mb-14">
+            <p className="text-primary text-xs font-bold uppercase tracking-[0.25em] mb-3">
+              How It Works
+            </p>
+            <h2 className={`${HEADING} text-3xl md:text-4xl font-extrabold text-charcoal`}>
+              Our Business Process
+            </h2>
+            <p className="mt-3 text-muted-foreground max-w-xl mx-auto text-sm">
+              From your first inquiry to final delivery — a transparent, engineer-led process with no surprises.
+            </p>
+          </div>
+
+          {/* Steps grid — 3 columns with dashed arrows */}
+          <div className="grid md:grid-cols-3 gap-y-12 gap-x-4 max-w-4xl mx-auto">
+            {[
+              { n: 1, title: "Contact Us", body: "Send an email, use the quote form, or upload your drawings. Tell us what you need.", icon: "📩" },
+              { n: 2, title: "24h Quote Response", body: "Our application engineer reviews your specs and responds within one business day with pricing and lead time.", icon: "⚡" },
+              { n: 3, title: "Engineering Review", body: "We confirm geometry, substrate, coating and tolerances. NDA available before any drawing review.", icon: "🔧" },
+              { n: 4, title: "Formal Quote", body: "You receive a written quotation with itemized pricing, lead time, and substrate / coating recommendation.", icon: "📄" },
+              { n: 5, title: "Purchase Order", body: "Once you approve the quote, issue your PO. Production starts within 1–2 business days.", icon: "✅" },
+              { n: 6, title: "Approval Drawing", body: "For custom tools we send a production drawing for your sign-off before grinding begins.", icon: "📐" },
+              { n: 7, title: "Production", body: "Your tools are ground on our Walter 5-axis CNC centres and 100% inspected on Zoller optical systems.", icon: "⚙️" },
+              { n: 8, title: "Shipping & Support", body: "Tools ship with CoC, CMM report, and material certificate. Our team stays available post-delivery.", icon: "🚚" },
+            ].map((step, i) => {
+              const isLast = i === 7;
+              const col = i % 3;
+              const showArrow = !isLast && col !== 2;
+              return (
+                <div key={step.n} className="relative flex flex-col items-center text-center px-4">
+                  {/* Circle */}
+                  <div className="relative">
+                    <div className="h-20 w-20 rounded-full bg-primary flex items-center justify-center shadow-lg">
+                      <span className="text-2xl">{step.icon}</span>
+                    </div>
+                    <div className="absolute -top-2 -right-2 h-6 w-6 rounded-full bg-charcoal text-white text-[10px] font-black flex items-center justify-center">
+                      {step.n}
+                    </div>
+                  </div>
+
+                  {/* Dashed arrow to the right */}
+                  {showArrow && (
+                    <div className="hidden md:flex absolute top-10 left-[calc(50%+44px)] right-[-50%] items-center">
+                      <div className="flex-1 border-t-2 border-dashed border-border" />
+                      <ArrowRight className="h-4 w-4 text-muted-foreground shrink-0" />
+                    </div>
+                  )}
+
+                  <h3 className="mt-5 text-sm font-bold text-charcoal">{step.title}</h3>
+                  <p className="mt-2 text-xs text-muted-foreground leading-relaxed max-w-[180px]">
+                    {step.body}
+                  </p>
+                </div>
+              );
+            })}
+          </div>
+
+          <div className="text-center mt-14">
+            <Link
+              href="/quote"
+              className="inline-flex items-center gap-2 bg-primary px-8 py-4 text-sm font-bold uppercase tracking-wider text-white hover:bg-primary/90 transition-colors"
+            >
+              Start Your Order <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
+        </div>
+      </section>
+
       {/* ── PRODUCT CATEGORIES ──────────────────────────────────────────── */}
       <section className="py-20 bg-background">
         <div className="container-page">

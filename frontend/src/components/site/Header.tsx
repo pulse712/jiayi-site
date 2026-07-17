@@ -8,6 +8,7 @@ import {
   Menu,
   X,
   ChevronDown,
+  ArrowRight,
   Phone,
   Mail,
   MapPin,
@@ -173,22 +174,73 @@ export function Header({ categories, siteSettings }: Props) {
                   </Link>
 
                   {megaOpen && (
-                    <div className="absolute left-1/2 top-full -translate-x-1/2 pt-1 z-50">
-                      <div className="w-[680px] rounded-md border border-border bg-white shadow-lg p-6 grid grid-cols-2 gap-x-8 gap-y-1">
-                        {categories.map((c) => (
-                          <Link
-                            key={c.slug}
-                            href={`/products/${c.slug}`}
-                            className="group block py-2.5 border-b border-border/60 last:border-0"
-                          >
-                            <div className="text-sm font-semibold text-charcoal group-hover:text-primary transition-colors">
-                              {c.name}
+                    <div className="fixed left-0 right-0 top-full z-50 pt-0">
+                      <div className="w-full bg-white border-t-2 border-primary shadow-2xl">
+                        <div className="container-page py-8">
+                          <div className="flex gap-8">
+                            {/* Left label */}
+                            <div className="shrink-0 w-44 border-r border-border pr-8">
+                              <div className="text-[10px] font-bold uppercase tracking-[0.2em] text-primary mb-2">
+                                Product Categories
+                              </div>
+                              <h3 className="text-lg font-black text-charcoal leading-tight">
+                                Cutting Tools
+                              </h3>
+                              <p className="mt-2 text-xs text-muted-foreground leading-relaxed">
+                                200+ standard tools. Custom geometries from your drawings.
+                              </p>
+                              <Link
+                                href="/products"
+                                className="mt-4 inline-flex items-center gap-1.5 text-xs font-bold text-primary hover:underline"
+                                onClick={() => setMegaOpen(false)}
+                              >
+                                View All <ArrowRight className="h-3 w-3" />
+                              </Link>
                             </div>
-                            <div className="text-xs text-muted-foreground mt-0.5 line-clamp-1">
-                              {c.short}
+
+                            {/* Category columns */}
+                            <div className="flex-1 grid grid-cols-3 xl:grid-cols-4 gap-x-6 gap-y-1">
+                              {categories.map((c) => (
+                                <Link
+                                  key={c.slug}
+                                  href={`/products/${c.slug}`}
+                                  className="group flex items-start gap-2 py-2.5 border-b border-border/40 last:border-0 hover:border-primary/30 transition-colors"
+                                  onClick={() => setMegaOpen(false)}
+                                >
+                                  <div className="mt-0.5 h-1.5 w-1.5 rounded-full bg-primary shrink-0" />
+                                  <div>
+                                    <div className="text-sm font-semibold text-charcoal group-hover:text-primary transition-colors leading-snug">
+                                      {c.name}
+                                    </div>
+                                    {c.short && (
+                                      <div className="text-[11px] text-muted-foreground mt-0.5 line-clamp-1">
+                                        {c.short}
+                                      </div>
+                                    )}
+                                  </div>
+                                </Link>
+                              ))}
                             </div>
-                          </Link>
-                        ))}
+
+                            {/* Right CTA */}
+                            <div className="shrink-0 w-40 border-l border-border pl-8 flex flex-col gap-3">
+                              <Link
+                                href="/quote"
+                                className="block text-center bg-primary text-white text-xs font-bold uppercase tracking-wider px-4 py-3 hover:bg-primary/90 transition-colors rounded"
+                                onClick={() => setMegaOpen(false)}
+                              >
+                                Get a Quote
+                              </Link>
+                              <Link
+                                href="/downloads"
+                                className="block text-center border border-border text-charcoal text-xs font-bold uppercase tracking-wider px-4 py-3 hover:border-primary hover:text-primary transition-colors rounded"
+                                onClick={() => setMegaOpen(false)}
+                              >
+                                Catalog PDF
+                              </Link>
+                            </div>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   )}
