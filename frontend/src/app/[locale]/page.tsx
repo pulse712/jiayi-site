@@ -5,6 +5,8 @@ import { Link } from "@/i18n/navigation";
 import {
   ArrowRight, CheckCircle2, Factory, Wrench, Globe,
   HeadphonesIcon, Award, BookOpen, Download, FileUp,
+  Mail, Zap, Settings, FileText, ShoppingCart, PenLine,
+  Cpu, Truck,
 } from "lucide-react";
 import {
   getCategories, getIndustries, getBlogPosts,
@@ -48,6 +50,17 @@ const CATEGORY_IMAGES: Record<string, string> = {
   "threading-tools":           "/images/cat-milling.jpg",
   "composite-material-machining": "/images/cat-composite.jpg",
 };
+
+const PROCESS_STEPS = [
+  { n: 1, icon: Mail,         title: "Contact Us",          body: "Send an email, submit the quote form, or upload your drawings directly. Tell us your application and requirements." },
+  { n: 2, icon: Zap,          title: "24h Quote Response",  body: "An application engineer reviews your specs and responds within one business day — with pricing, lead time, and substrate recommendation." },
+  { n: 3, icon: Settings,     title: "Engineering Review",  body: "We confirm geometry, substrate, coating and tolerances. NDA available before any drawing review." },
+  { n: 4, icon: FileText,     title: "Formal Quote",        body: "You receive a written quotation with itemized pricing, delivery terms, and full technical specification." },
+  { n: 5, icon: ShoppingCart, title: "Purchase Order",      body: "Once you approve, issue your PO. Production is scheduled and starts within 1–2 business days." },
+  { n: 6, icon: PenLine,      title: "Approval Drawing",    body: "For custom tools, we send a production drawing for your sign-off before grinding begins — no surprises." },
+  { n: 7, icon: Cpu,          title: "Production",          body: "Your tools are ground on Walter 5-axis CNC centres and 100% inspected on Zoller optical measurement systems." },
+  { n: 8, icon: Truck,        title: "Shipping & Support",  body: "Tools ship with CoC, CMM report, and material certificate. Our team remains available for post-delivery support." },
+];
 
 const WHY_US = [
   {
@@ -199,71 +212,90 @@ export default async function HomePage() {
       </section>
 
       {/* ── BUSINESS PROCESS ────────────────────────────────────────────── */}
-      <section className="py-20 bg-background border-b border-border">
+      <section className="py-24 bg-charcoal overflow-hidden">
         <div className="container-page">
-          <div className="text-center mb-14">
+          {/* Header */}
+          <div className="text-center mb-16">
             <p className="text-primary text-xs font-bold uppercase tracking-[0.25em] mb-3">
               How It Works
             </p>
-            <h2 className={`${HEADING} text-3xl md:text-4xl font-extrabold text-charcoal`}>
+            <h2 className={`${HEADING} text-3xl md:text-4xl font-extrabold text-white`}>
               Our Business Process
             </h2>
-            <p className="mt-3 text-muted-foreground max-w-xl mx-auto text-sm">
+            <p className="mt-4 text-white/60 max-w-xl mx-auto">
               From your first inquiry to final delivery — a transparent, engineer-led process with no surprises.
             </p>
           </div>
 
-          {/* Steps grid — 3 columns with dashed arrows */}
-          <div className="grid md:grid-cols-3 gap-y-12 gap-x-4 max-w-4xl mx-auto">
-            {[
-              { n: 1, title: "Contact Us", body: "Send an email, use the quote form, or upload your drawings. Tell us what you need.", icon: "📩" },
-              { n: 2, title: "24h Quote Response", body: "Our application engineer reviews your specs and responds within one business day with pricing and lead time.", icon: "⚡" },
-              { n: 3, title: "Engineering Review", body: "We confirm geometry, substrate, coating and tolerances. NDA available before any drawing review.", icon: "🔧" },
-              { n: 4, title: "Formal Quote", body: "You receive a written quotation with itemized pricing, lead time, and substrate / coating recommendation.", icon: "📄" },
-              { n: 5, title: "Purchase Order", body: "Once you approve the quote, issue your PO. Production starts within 1–2 business days.", icon: "✅" },
-              { n: 6, title: "Approval Drawing", body: "For custom tools we send a production drawing for your sign-off before grinding begins.", icon: "📐" },
-              { n: 7, title: "Production", body: "Your tools are ground on our Walter 5-axis CNC centres and 100% inspected on Zoller optical systems.", icon: "⚙️" },
-              { n: 8, title: "Shipping & Support", body: "Tools ship with CoC, CMM report, and material certificate. Our team stays available post-delivery.", icon: "🚚" },
-            ].map((step, i) => {
-              const isLast = i === 7;
-              const col = i % 3;
-              const showArrow = !isLast && col !== 2;
-              return (
-                <div key={step.n} className="relative flex flex-col items-center text-center px-4">
-                  {/* Circle */}
-                  <div className="relative">
-                    <div className="h-20 w-20 rounded-full bg-primary flex items-center justify-center shadow-lg">
-                      <span className="text-2xl">{step.icon}</span>
+          {/* Row 1 — steps 1–4 */}
+          <div className="relative">
+            {/* Connecting line */}
+            <div className="hidden md:block absolute top-10 left-[12.5%] right-[12.5%] h-px border-t-2 border-dashed border-white/20" />
+
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+              {PROCESS_STEPS.slice(0, 4).map((step) => {
+                const Icon = step.icon;
+                return (
+                  <div key={step.n} className="flex flex-col items-center text-center group">
+                    {/* Icon circle */}
+                    <div className="relative z-10 mb-5">
+                      <div className="h-20 w-20 rounded-full bg-primary shadow-[0_0_0_8px_rgba(220,38,38,0.15)] flex items-center justify-center transition-transform duration-300 group-hover:scale-110">
+                        <Icon className="h-8 w-8 text-white" strokeWidth={1.5} />
+                      </div>
+                      <div className="absolute -top-1 -right-1 h-6 w-6 rounded-full bg-white text-charcoal text-[11px] font-black flex items-center justify-center shadow-md">
+                        {step.n}
+                      </div>
                     </div>
-                    <div className="absolute -top-2 -right-2 h-6 w-6 rounded-full bg-charcoal text-white text-[10px] font-black flex items-center justify-center">
-                      {step.n}
-                    </div>
+                    <h3 className="text-sm font-bold text-white mb-2">{step.title}</h3>
+                    <p className="text-xs text-white/50 leading-relaxed max-w-[160px]">{step.body}</p>
                   </div>
-
-                  {/* Dashed arrow to the right */}
-                  {showArrow && (
-                    <div className="hidden md:flex absolute top-10 left-[calc(50%+44px)] right-[-50%] items-center">
-                      <div className="flex-1 border-t-2 border-dashed border-border" />
-                      <ArrowRight className="h-4 w-4 text-muted-foreground shrink-0" />
-                    </div>
-                  )}
-
-                  <h3 className="mt-5 text-sm font-bold text-charcoal">{step.title}</h3>
-                  <p className="mt-2 text-xs text-muted-foreground leading-relaxed max-w-[180px]">
-                    {step.body}
-                  </p>
-                </div>
-              );
-            })}
+                );
+              })}
+            </div>
           </div>
 
-          <div className="text-center mt-14">
+          {/* Turn arrow */}
+          <div className="hidden md:flex justify-end pr-[12.5%] my-2">
+            <div className="flex flex-col items-center gap-1 text-white/20">
+              <div className="h-8 w-px border-l-2 border-dashed border-white/20" />
+              <ArrowRight className="h-4 w-4 rotate-90" />
+            </div>
+          </div>
+
+          {/* Row 2 — steps 5–8, reversed direction */}
+          <div className="relative mt-2">
+            <div className="hidden md:block absolute top-10 left-[12.5%] right-[12.5%] h-px border-t-2 border-dashed border-white/20" />
+
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+              {PROCESS_STEPS.slice(4, 8).map((step) => {
+                const Icon = step.icon;
+                return (
+                  <div key={step.n} className="flex flex-col items-center text-center group">
+                    <div className="relative z-10 mb-5">
+                      <div className="h-20 w-20 rounded-full bg-primary shadow-[0_0_0_8px_rgba(220,38,38,0.15)] flex items-center justify-center transition-transform duration-300 group-hover:scale-110">
+                        <Icon className="h-8 w-8 text-white" strokeWidth={1.5} />
+                      </div>
+                      <div className="absolute -top-1 -right-1 h-6 w-6 rounded-full bg-white text-charcoal text-[11px] font-black flex items-center justify-center shadow-md">
+                        {step.n}
+                      </div>
+                    </div>
+                    <h3 className="text-sm font-bold text-white mb-2">{step.title}</h3>
+                    <p className="text-xs text-white/50 leading-relaxed max-w-[160px]">{step.body}</p>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* CTA */}
+          <div className="text-center mt-16">
             <Link
               href="/quote"
-              className="inline-flex items-center gap-2 bg-primary px-8 py-4 text-sm font-bold uppercase tracking-wider text-white hover:bg-primary/90 transition-colors"
+              className="group inline-flex items-center gap-2 bg-primary px-8 py-4 text-sm font-bold uppercase tracking-wider text-white hover:bg-primary/90 transition-colors"
             >
-              Start Your Order <ArrowRight className="h-4 w-4" />
+              Start Your Order <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
             </Link>
+            <p className="mt-4 text-xs text-white/30">Engineering team responds within 24 hours</p>
           </div>
         </div>
       </section>
